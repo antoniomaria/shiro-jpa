@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <users id="1" username="admin" password="1234" givenNames="admin" surname="admin" email="admin@shiro.net.sf"/>
+</dataset>

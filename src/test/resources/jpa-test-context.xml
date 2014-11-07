@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                           http://www.springframework.org/schema/tx 
+                           http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+                           http://www.springframework.org/schema/util 
+                           http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+  <context:component-scan base-package="net.sf.lab.shiro.dao.impl" />
+
+  <tx:annotation-driven />
+
+  <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" p:entityManagerFactory-ref="entityManagerFactory"
+    p:jpaProperties-ref="jpaPropertyMap" />
+
+  <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" p:dataSource-ref="dataSource"
+    p:packagesToScan="net.sf.lab.shiro.domain" p:jpaVendorAdapter-ref="eclipseLinkVendor" p:jpaPropertyMap-ref="jpaPropertyMap">
+  </bean>
+
+  <util:map id="jpaPropertyMap">
+    <entry key="eclipselink.ddl-generation" value="create-tables" />
+    <entry key="eclipselink.ddl-generation.output-mode" value="database" />
+    <entry key="databasePlatform" value="org.eclipse.persistence.platform.database.HSQLPlatform" />
+    <entry key="eclipselink.weaving" value="false" />
+    <entry key="eclipselink.cache.shared.default" value="false" />
+    <entry key="eclipselink.logging.level.sql" value="FINE" />
+    <entry key="eclipselink.logging.parameters" value="true" />
+  </util:map>
+
+  <bean id="eclipseLinkVendor" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
+    <property name="generateDdl" value="true" />
+    <property name="showSql" value="true" />
+    <property name="databasePlatform" value="HSQL" />
+  </bean>
+</beans>
