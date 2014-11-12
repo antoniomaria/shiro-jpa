@@ -3,8 +3,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
-import net.sf.lab.shiro.dao.support.Permission;
 import net.sf.lab.shiro.domain.support.AbstractPersistable;
+import net.sf.lab.shiro.repository.support.Permission;
 import net.sf.lab.shiro.types.Perm;
 
 @Entity
@@ -49,7 +49,7 @@ public class PostPermission extends AbstractPersistable implements Permission{
     }
 
     public String getLiteral() {
-        return new StringBuilder().append(Post.class.getSimpleName().toLowerCase()).append(":")
+        return new StringBuilder().append(target.getClass().getSimpleName().toLowerCase()).append(":")
                 .append(Perm.getLiteral(mask)).append(":").append(this.target.getId()).toString();
     }
 }

@@ -1,13 +1,14 @@
 package net.sf.lab.shiro.realm;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
-import net.sf.lab.shiro.dao.UserDAO;
-import net.sf.lab.shiro.dao.support.Permission;
 import net.sf.lab.shiro.domain.PostPermission;
+import net.sf.lab.shiro.domain.Role;
 import net.sf.lab.shiro.domain.User;
+import net.sf.lab.shiro.repository.UserDAO;
 
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.AuthenticationException;
@@ -32,13 +33,13 @@ public class JPARealm extends AuthorizingRealm {
     public final static Logger logger = LoggerFactory.getLogger(JPARealm.class);
 
     @Autowired
-    private UserDAO userService;
+    private UserDAO userRepository;
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
         String username = upToken.getUsername();
-        char [] password = upToken.getPassword();
+        char[] password = upToken.getPassword();
 
         // Null apikey is invalid
         if (username == null) {
@@ -46,17 +47,18 @@ public class JPARealm extends AuthorizingRealm {
         }
         User user = null;
         try {
-            user = userService.findByUsername(username);
+            user = userRepository.findByUsername(username);
             if (user == null) {
                 throw new UnknownAccountException("No account found for userName [" + username + "]");
             }
+            // TODO make a proper authentication
         } catch (PersistenceException e) {
             final String message = "There was a SQL error while authenticating userName [" + username + "]";
             // Rethrow any SQL errors as an authentication exception
             throw new AuthenticationException(message, e);
         }
         logger.info("Authentication successfully for user {}", user.getFullName());
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(username, password, getName());
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user.getId(), password, getName());
         return info;
     }
 
@@ -71,18 +73,19 @@ public class JPARealm extends AuthorizingRealm {
         if (principals == null) {
             throw new AuthorizationException("PrincipalCollection method argument cannot be null.");
         }
-        User user = (User) getAvailablePrincipal(principals);
+        Integer userId = (Integer) getAvailablePrincipal(principals);
 
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        /*-
-        Set<Role> roles = userService.getRoles(user.getId());
+        Set<Role> roles = userRepository.getRoles(userId);
         for (Role role : roles) {
             info.addRole(role.getName());
-        }*/
-        List<PostPermission> permissions = userService.getPermissions(user.getId());
+        }
+        List<PostPermission> permissions = userRepository.getPermissions(userId);
 
-        for (Permission permission : permissions) {
-            info.addStringPermission(permission.getLiteral());
+        for (PostPermission permission : permissions) {
+            if (permission.getMask() > 0) {
+                info.addStringPermission(permission.getLiteral());
+            }
         }
         return info;
     }

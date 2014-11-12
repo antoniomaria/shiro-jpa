@@ -1,8 +1,16 @@
 package net.sf.lab.shiro.domain;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -19,7 +27,7 @@ public class User extends AbstractPersistable {
 
     @Column(nullable = false)
     private String password;
-    
+
     private String salt;
 
     @Column(nullable = false)
@@ -30,10 +38,14 @@ public class User extends AbstractPersistable {
 
     @Column(nullable = false)
     private String email;
-    
+
     @Lob
     private String profile;
-    
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") })
+    private final Set<Role> roles = new HashSet<Role>();
+
     public User() {
         super();
     }
@@ -92,6 +104,14 @@ public class User extends AbstractPersistable {
 
     public void setProfile(String profile) {
         this.profile = profile;
+    }
+
+    public Set<Role> getRoles() {
+        return Collections.unmodifiableSet(roles);
+    }
+
+    protected void addRole(Role role) {
+        roles.add(role);
     }
 
     @Transient

@@ -1,4 +1,4 @@
-package net.sf.lab.shiro.dao.support;
+package net.sf.lab.shiro.repository.support;
 
 import net.sf.lab.shiro.domain.support.Persistable;
 

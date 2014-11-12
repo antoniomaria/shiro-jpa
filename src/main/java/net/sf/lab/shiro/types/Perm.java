@@ -5,7 +5,7 @@ import java.util.List;
 
 public enum Perm {
 
-    READ(1, "read"), UPDATE(2, "update"), DELETE(4, "delete");
+    CREATE(1, "create"), READ(2, "read"), UPDATE(4, "update"), DELETE(8, "delete");
 
     private int mask;
     private String literal;
@@ -36,10 +36,6 @@ public enum Perm {
             }
         }
         return builder.toString();
-    }
-
-    public boolean imply(int numeral) {
-        return (this.mask & numeral) == numeral;
     }
 
 }

@@ -1,4 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
   <users id="1" username="admin" password="1234" givenNames="admin" surname="admin" email="admin@shiro.net.sf"/>
+  
+  <role id="1" name="administrator" />
+  <role id="2" name="manager" />
+  <role id="3" name="user" />
+  
+  <user_role user_id="1" role_id="1" />
+  
+  <post id="5" title="My first post"/>
+  <postpermission id="10" target_id="5" user_id="1" mask="7"/>
 </dataset>
