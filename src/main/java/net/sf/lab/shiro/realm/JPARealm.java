@@ -8,7 +8,7 @@ import javax.persistence.PersistenceException;
 import net.sf.lab.shiro.domain.PostPermission;
 import net.sf.lab.shiro.domain.Role;
 import net.sf.lab.shiro.domain.User;
-import net.sf.lab.shiro.repository.UserDAO;
+import net.sf.lab.shiro.repository.UserRepository;
 
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.AuthenticationException;
@@ -33,7 +33,7 @@ public class JPARealm extends AuthorizingRealm {
     public final static Logger logger = LoggerFactory.getLogger(JPARealm.class);
 
     @Autowired
-    private UserDAO userRepository;
+    private UserRepository userRepository;
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {

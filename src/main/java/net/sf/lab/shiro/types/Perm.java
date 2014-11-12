@@ -19,19 +19,24 @@ public enum Perm {
         return mask;
     }
 
-    public static String getLiteral(int mask) {
+    public static String getLiteral(int  mask) {
         Perm values[] = Perm.values();
-        List<String> literals = new ArrayList<String>();
-        for (int idx = 0; idx < values.length; idx++) {
+
+        List<String> actions = new ArrayList<String>();
+        int idx = 0;
+        while (idx < values.length && mask > 0) {
             Perm value = values[idx];
             if ((mask & value.getMask()) == value.getMask()) {
-                literals.add(value.literal);
+                actions.add(value.literal);
+                mask = mask | value.getMask();
             }
+            idx++;
         }
+
         StringBuilder builder = new StringBuilder();
-        for (int idx = 0; idx < literals.size(); idx++) {
-            builder.append(literals.get(idx));
-            if (idx != literals.size() - 1) {
+        for (idx = 0; idx < actions.size(); idx++) {
+            builder.append(actions.get(idx));
+            if (idx != actions.size() - 1) {
                 builder.append(",");
             }
         }
